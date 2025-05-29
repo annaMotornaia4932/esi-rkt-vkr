@@ -1,0 +1,71 @@
+.jstree-anchor.jstreeMatch {
+    color: #914214;
+    font-weight: bold;
+}
+body {
+    height: auto !important;
+    min-height: 0 !important;
+    position: relative;
+    display: block;
+    margin-top: 18px;
+    margin: 20px;
+    font-family: "Monospace",Courier New,sans-serif;
+    font-size: 16px;
+    line-height: 1.42857143;
+    color: #423a32;
+    background-color: rgba(224, 236, 219, 0.31);
+    image-rendering: auto;
+}
+#overSearchMessage {
+    margin-top: 10px;
+    color: red;
+}
+
+#overSearchModal {
+    display:none;
+    position: fixed;
+    top: 20%;
+    left: 35%;
+    width: 30%;
+    background: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 1000;
+}
+/* Стили для контекстного меню */
+.context-menu {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    width: 200px;
+    background: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.44);
+}
+
+.context-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 5px 0;
+}
+
+.context-menu li {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.context-menu li:hover {
+    background-color: #f0f0f0;
+}
+.detail-row{
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    margin: 4px;
+}
+.detail-value{
+    flex: 1;
+    text-align: right;
+    color: #1e1d1d;
+    font-weight: bold;
+}

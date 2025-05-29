@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Все акции</title>
+    <link rel="stylesheet" type="text/css" href="../main/resources/static/style.css"/>
+</head>
+<body>
+<form action="/all" method="get">
+<h3>Список акций (всего : ${detailSize})</h3>
+<tr>
+    <td>Id</td>
+    <td>Количество</td>
+    <td>Компания</td>
+    <td>Стоимость (дол/шт)</td>
+</tr>
+<#list detailList as detail>
+<tr>
+    <td>${detail.id}</td>
+    <td>${detail.priorityId}</td>
+    <td>${detail.description}</td>
+    <td>${detail.date}</td>
+</tr>
+#list>
+</table>
+<br>
+<button class="buttonBack"><-- Back</button>
+</form>
+</body>
+</html>
