@@ -16,14 +16,15 @@ import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
+import jakarta.persistence.EntityNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
 
 @RestController
 @RequestMapping("/details")
@@ -43,9 +44,11 @@ public class DetailController {
     List<Detail> detailList;
 
     @GetMapping
-    public List<Detail> getAll(Model model) {
-        detailList = detailService.getAll();
-        return detailList;
+    public List<DetailDTO> getAll() {
+        return detailRepository.findAll()
+                .stream()
+                .map(detailMapper::toDTO)
+                .toList();
     }
 
     @RequestMapping("/delete/{id}")
@@ -55,8 +58,12 @@ public class DetailController {
     }
 
     @PostMapping
-    public Detail create(@RequestBody Detail detail) {
-        return detailService.save(detail);
+    public ResponseEntity<DetailDTO> create(@RequestBody DetailDTO dto) {
+        Detail detail = detailMapper.toDetail(dto, detailRepository);
+        Detail saved = detailRepository.save(detail);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(detailMapper.toDTO(saved));
     }
 
     //загрузить документ в базу сохранить
@@ -114,7 +121,6 @@ public class DetailController {
                 .body(document.getData());
     }
 
-    // изменить инф о детали
     @PutMapping("/{id}")
     public ResponseEntity<DetailDTO> updateDetail(@PathVariable Long id, @RequestBody DetailDTO detailDto){
         Optional<Detail> optionalDetail = detailRepository.findById(id);
@@ -130,14 +136,13 @@ public class DetailController {
         if(detailDto.getPriority() != null) detail.setPriority(detailDto.getPriority());
 
         detailRepository.save(detail);
-        return ResponseEntity.ok(new DetailDTO( detail.getId(), detail.getName(),
-                detail.getIdGost(), detail.getCode(), detail.getMaterial(), detail.getPriority(), detail.getWeight()));
+        return ResponseEntity.ok(new DetailDTO(detail));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<DetailDTO> getWeightMaterial (@PathVariable Long id) {
         Optional<Detail> optionalDetail = detailRepository.findById(id);
-        if (!optionalDetail.isPresent()) {
+        if (optionalDetail.isPresent()) {
             DetailDTO detailDto = detailMapper.toDTO(optionalDetail.get());
             return ResponseEntity.ok(detailDto);
         } else {

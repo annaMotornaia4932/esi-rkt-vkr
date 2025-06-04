@@ -25,6 +25,13 @@ public class Detail {
     private String priority;
     private Double weight;
 
-    @OneToMany(mappedBy = "parentDetail", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Detail parent;
+
+    @OneToMany(mappedBy = "parentDetail", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private  List<Document> documents = new ArrayList<>();
+
+    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Detail> children = new ArrayList<>();
 }
