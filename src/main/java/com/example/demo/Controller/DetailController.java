@@ -51,10 +51,15 @@ public class DetailController {
                 .toList();
     }
 
-    @RequestMapping("/delete/{id}")
-    public String deleteTask(@PathVariable Long id) {
-        detailService.delete(id);
-        return "redirect:/";
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteNode (@PathVariable Long id) {
+        Optional<Detail> optionalDetail = detailRepository.findById(id);
+        if (optionalDetail.isPresent()) {
+            detailRepository.deleteById(id);
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
@@ -107,7 +112,7 @@ public class DetailController {
         return ResponseEntity.ok(documents);
     }
 
-    //загрузить докоткрыть в новой вкладке
+    //загрузить док открыть в новой вкладке
     @GetMapping("/documents/{id}")
     public ResponseEntity<byte[]> gownloadDoc (@PathVariable Long id) {
         Optional<Document> optionalDocument = documentRepository.findById(id);
@@ -171,37 +176,14 @@ System.out.println(dtos);
 return ResponseEntity.ok(dtos);
     }
 
-    @PostMapping("/upload-model")
-    public ResponseEntity<String> upload3D(
-            @RequestParam("modelfile") MultipartFile modelfile,
-            @RequestParam("nodeId") Long nodeId){
-        if(modelfile.isEmpty()){
-            return ResponseEntity.badRequest().body("Bad file");
-        }
-        try {
-            Path uploadDir = Paths.get("upload/models");
-            Files.createDirectories(uploadDir);
-            String fileName = nodeId + "_" + modelfile.getOriginalFilename();
-            Path filePath = uploadDir.resolve(fileName);
-
-            Optional<Detail> optionalDetail = detailRepository.findById(nodeId);
-            Detail detail = optionalDetail.get();
-            if (optionalDetail.isPresent()) {
-                Document document = new Document();
-                document.setData(modelfile.getBytes());
-                document.setFileName(modelfile.getOriginalFilename());
-                document.setContentType(modelfile.getContentType());
-                document.setParentDetail(detail);
-                detail.getDocuments().add(document);
-                detailRepository.save(detail);
-                List<DocumentDTO> docDTO = detail.getDocuments().stream()
-                        .map(DocumentDTO::new)
-                        .toList();
-            }
-            return ResponseEntity.ok("Файл Загружен");
-        } catch (IOException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ошибка сервера при загрузке 3д");
+    @DeleteMapping("/documents/{id}")
+    public ResponseEntity<Void> deleteDocument(@PathVariable Long id) {
+        Optional<Document> optionalDoc = documentRepository.findById(id);
+        if (optionalDoc.isPresent()) {
+            documentRepository.deleteById(id);
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
         }
     }
 

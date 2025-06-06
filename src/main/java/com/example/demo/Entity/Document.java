@@ -1,6 +1,5 @@
 package com.example.demo.Entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,12 +11,12 @@ import lombok.Setter;
 public class Document {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String fileName;
-    private String contentType;
+    private Long id; //автоинкремент id
+    private String fileName; //наименование
+    private String contentType; //тип документа
 
     @Lob
-    private byte[] data;
+    private byte[] data; //битовые данные Large Object
 
     @ManyToOne
     @JoinColumn(name = "detail_id")
