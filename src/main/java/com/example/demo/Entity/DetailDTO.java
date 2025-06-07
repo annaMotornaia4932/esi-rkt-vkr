@@ -44,5 +44,4 @@ public class DetailDTO {
         this.priority = priority;
         this.weight = weight;
     }
-
 }
